@@ -85,3 +85,43 @@ In JavaScript land, servers are typically single-threaded. A Node.js server (oft
 - Node.js and Express work well for I/O bound tasks, but struggle with CPU-bound tasks.
 
 Go generally outperforms JavaScript when it comes to computational speed.
+
+## Fileservers
+
+A fileserver is a kind of simple web server that serves static files from the host machine. Fileservers are often used to serve static assets for a website, things like:
+- HTML
+- CSS
+- JavaScript
+- Images
+
+Here is how we declared our simple fileserver in Go:
+```
+// The http.Server struct is used o define a server configuration
+srv := &http.Server{
+    Addr:    ":" + port,
+    Handler: mux,
+}
+
+log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
+log.Fatal(srv.ListenAndServe()) // The main function is now blocking until the server shuts down
+```
+
+## Serving Images
+You may be wondering how the fileserver knew to serve the `index.html` file to the root of the server. It's such a common convention on the web to use a file called `index.html` to serve the webpage for a given path, that the Go standard library's FileServer does it automatically.
+
+When using a standard fileserver, the path to a file on disk is the same as its URL path. An exception is that `index.html` is served from `/` instead of `/index.html`.
+
+### Try It Out
+Run your chirpy server again, and open `http://localhost:8080/index.html` in a new browser tab. You'll notice that you're redirected to `http://localhost:8080/`.
+
+This works for all directories, not just the root!
+
+For example:
+- `/index.html` wil be served from `/`
+- `/pages/index.html` will be served from `/pages`
+- `/pages/about/index.html` will be served from `/pages/about`
+
+## Workflow Tips
+Servers are interesting because they are always running. A lot of code we've written in Boot.dev up to this point has acted more like a command line tol: it runs, does its thing, and then exits.
+
+Servers are different. They run forever, waiting for requests to come in, processing them, sending responses, and then waiting for the next request. If they didn't work this way, websites and apps would be down and unavailable all the time.
