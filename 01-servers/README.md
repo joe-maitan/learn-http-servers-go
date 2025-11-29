@@ -125,3 +125,59 @@ For example:
 Servers are interesting because they are always running. A lot of code we've written in Boot.dev up to this point has acted more like a command line tol: it runs, does its thing, and then exits.
 
 Servers are different. They run forever, waiting for requests to come in, processing them, sending responses, and then waiting for the next request. If they didn't work this way, websites and apps would be down and unavailable all the time.
+
+### Debugging a Server
+Debugging a CLI app is simple:
+1. Write some code.
+2. Build and run the code.
+3. See if it did what you expected.
+4. If it didn't, add some logging or fix the code, and go back to step 2.
+
+Debugging a server is a little different. The simplest way (minimal tooling) is to:
+1. Write some code.
+2. Build and run the code.
+3. Send a request to the server using a browser or some other HTTP client.
+4. See if it did what you expected. 
+5. If it didn't, add some logging or fix the code, and go back to step 2.
+
+Make sure you're testing your server by hitting endpoints in the browser!
+
+### Restarting a server
+```
+go run .
+```
+
+This builds and runs the server in one command. Assumming it is in the `main` package directory.
+
+## Custom Handlers
+In the previous exercise, we use the `http.FileServer` function, which returns a simple built-in `http.Handler`.
+
+An `http.Handler` is just an interface.
+
+```
+type Handler interface {
+	ServerHTTP(ResponseWriter, *Request)
+}
+```
+
+Any type with a `ServeHTTP` method that matches the `http.HandlerFunc` signature above is an `http.Handler`.
+
+A Handler **responds** to an HTTP request.
+
+## Handler Review
+An `http.Handler` is any defined type that implements the set of methods defined by the `Handler` interface, specifically the `ServeHTTP` method.
+
+The `ServeMux` we are using in Chirpy is a handler.
+
+Typically a handler would be used for more complex use cases, suh as when you want to implement a custom router, middleware, or other custom logic.
+
+### HandlerFunc
+```
+type HandlerFunc func(ResponseWriter, *Request)
+```
+
+You'll typically use a `HandlerFunc` when you want to implement a simple handler. The `HandlerFunc` type is just a function that matches the `ServerHTTP` signature above.
+
+The `Request` argument contains all the information about the incoming request, such as the HTTP method, path, headers, and body.
+
+The `ResponseWriter` argument what we use to write the response to from the request.
