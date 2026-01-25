@@ -149,6 +149,11 @@ go run .
 
 This builds and runs the server in one command. Assumming it is in the `main` package directory.
 
+Alternatively you can compile a binary and run it instead.
+```
+go build -o out && ./out
+```
+
 ## Custom Handlers
 In the previous exercise, we use the `http.FileServer` function, which returns a simple built-in `http.Handler`.
 
